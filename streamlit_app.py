@@ -144,7 +144,7 @@ div[data-testid="stExpander"] summary {
 }
 
 /* Style for anchor links pointing to final-research-report to look like a premium button */
-a[href="#final-research-report"] {
+a[href="#final-research-report"]:not(.report-card-link) {
     display: block !important;
     text-align: center !important;
     margin-top: 12px !important;
@@ -158,13 +158,13 @@ a[href="#final-research-report"] {
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     transition: all 0.3s ease !important;
 }
-a[href="#final-research-report"]:hover {
+a[href="#final-research-report"]:not(.report-card-link):hover {
     background: linear-gradient(135deg, #818CF8 0%, #C084FC 100%) !important;
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5) !important;
     transform: translateY(-1px) !important;
     color: #ffffff !important;
 }
-a[href="#final-research-report"]:active {
+a[href="#final-research-report"]:not(.report-card-link):active {
     transform: scale(0.98) !important;
 }
 
@@ -502,50 +502,63 @@ div[data-testid="stFileUploader"] {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 div[data-testid="stFileUploader"] > label {
     display: none !important;
 }
 div[data-testid="stFileUploader"] section {
-    padding: 0 10px !important;
-    background-color: rgba(18, 16, 36, 0.8) !important;
-    border: 1px dashed rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     height: 48px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: all 0.2s ease !important;
-}
-div[data-testid="stFileUploader"] section:hover {
-    border-color: #8B5CF6 !important;
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 }
 div[data-testid="stFileUploader"] section > div {
-    display: none !important; /* Hides default instruction description texts */
+    display: none !important; /* Hides default instruction text */
 }
-/* Style the actual browse button inside the uploader section */
+/* Style the actual browse button to look like a premium full-size Upload PDF button */
 div[data-testid="stFileUploader"] button {
     background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%) !important;
-    color: #ffffff !important;
     border: none !important;
-    border-radius: 8px !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    padding: 4px 14px !important;
-    height: 32px !important;
+    border-radius: 12px !important;
+    height: 48px !important;
+    width: 100% !important;
     min-height: unset !important;
-    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     transition: all 0.2s ease !important;
+    font-size: 0 !important;
+    color: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+}
+div[data-testid="stFileUploader"] button * {
+    display: none !important;
+}
+div[data-testid="stFileUploader"] button::after {
+    content: "Upload PDF" !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 div[data-testid="stFileUploader"] button:hover {
     background: linear-gradient(135deg, #818CF8 0%, #C084FC 100%) !important;
-    box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4) !important;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5) !important;
     transform: translateY(-1px) !important;
 }
 div[data-testid="stFileUploader"] button:active {
-    transform: scale(0.96) !important;
+    transform: scale(0.98) !important;
 }
 
 /* Styling for the uploaded file name container - renders cleanly below the uploader box */
@@ -556,7 +569,7 @@ div[data-testid="stFileUploaderFileData"] {
     padding: 6px 12px !important;
     margin-top: 8px !important;
     color: #e2e8f0 !important;
-    font-size: 13px !important;
+    font-size: 13px;
 }
 
 </style>
@@ -670,7 +683,7 @@ def get_report_card_html(status: str, sources: int, claims: int, confidence: str
 
     if status == "complete" or status == "ready":
         html = f"""
-        <a href="#final-research-report" target="_self" style="text-decoration: none; color: inherit; display: block; height: 100%;">
+        <a href="#final-research-report" target="_self" class="report-card-link" style="text-decoration: none; color: inherit; display: block; height: 100%;">
           {card_content}
         </a>
         """
