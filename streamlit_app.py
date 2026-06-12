@@ -39,6 +39,8 @@ if "error" not in st.session_state:
     st.session_state.error = ""
 if "open_modal" not in st.session_state:
     st.session_state.open_modal = None
+if "has_scrolled" not in st.session_state:
+    st.session_state.has_scrolled = False
 
 # Stats and Agent States
 if "articles_count" not in st.session_state:
@@ -143,8 +145,8 @@ div[data-testid="stExpander"] summary {
     -webkit-text-fill-color: transparent;
 }
 
-/* Style for anchor links pointing to final-research-report to look like a premium button */
-a[href="#final-research-report"]:not(.report-card-link) {
+/* Style for anchor links pointing to research-report-preview to look like a premium button */
+a[href="#research-report-preview"]:not(.report-card-link) {
     display: block !important;
     text-align: center !important;
     margin-top: 12px !important;
@@ -158,13 +160,13 @@ a[href="#final-research-report"]:not(.report-card-link) {
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     transition: all 0.3s ease !important;
 }
-a[href="#final-research-report"]:not(.report-card-link):hover {
+a[href="#research-report-preview"]:not(.report-card-link):hover {
     background: linear-gradient(135deg, #818CF8 0%, #C084FC 100%) !important;
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5) !important;
     transform: translateY(-1px) !important;
     color: #ffffff !important;
 }
-a[href="#final-research-report"]:not(.report-card-link):active {
+a[href="#research-report-preview"]:not(.report-card-link):active {
     transform: scale(0.98) !important;
 }
 
@@ -234,10 +236,10 @@ div[data-testid="column"]:has(div.agent-header):hover {
     background: rgba(28, 25, 56, 0.8) !important;
     transform: translateY(-2px) !important;
 }
-div[data-testid="column"]:has(div.agent-header):has(a[href="#final-research-report"]) {
+div[data-testid="column"]:has(div.agent-header):has(a[href="#research-report-preview"]) {
     cursor: pointer !important;
 }
-div[data-testid="column"]:has(div.agent-header):has(a[href="#final-research-report"]):hover {
+div[data-testid="column"]:has(div.agent-header):has(a[href="#research-report-preview"]):hover {
     box-shadow: 0 0 25px rgba(139, 92, 246, 0.45) !important;
     transform: translateY(-4px) !important;
     background: rgba(28, 25, 56, 0.9) !important;
@@ -572,7 +574,44 @@ div[data-testid="stFileUploaderFileData"] {
     font-size: 13px;
 }
 
+/* Success Banner styling with subtle green accent */
+.success-banner {
+    background: rgba(16, 185, 129, 0.05) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    border-left: 4px solid #10B981 !important;
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    margin-bottom: 24px !important;
+    margin-top: 24px !important;
+}
+.success-banner-title {
+    color: #10B981 !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    margin-bottom: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.success-banner-subtitle {
+    color: #94a3b8 !important;
+    font-size: 13px !important;
+}
+
+/* Responsive layout helper for downloads container */
+@media (max-width: 768px) {
+    div[data-testid="stVerticalBlock"]:has(div.download-section-trigger) div[data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+    }
+    div[data-testid="stVerticalBlock"]:has(div.download-section-trigger) div[data-testid="stHorizontalBlock"] div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+}
+
 </style>
+
 """, unsafe_allow_html=True)
 
 # Helper functions to build HTML segments
@@ -683,7 +722,7 @@ def get_report_card_html(status: str, sources: int, claims: int, confidence: str
 
     if status == "complete" or status == "ready":
         html = f"""
-        <a href="#final-research-report" target="_self" class="report-card-link" style="text-decoration: none; color: inherit; display: block; height: 100%;">
+        <a href="#research-report-preview" target="_self" class="report-card-link" style="text-decoration: none; color: inherit; display: block; height: 100%;">
           {card_content}
         </a>
         """
@@ -805,34 +844,7 @@ with col_a3:
         st.session_state.open_modal = "verification"
         st.rerun()
 
-# Compact Report Status Card directly below col_a4 (in a new row)
-col_b1, col_b2, col_b3, col_b4 = st.columns(4)
-with col_b4:
-    if st.session_state.agent_states["report"] != "waiting":
-        total_selected = len(st.session_state.articles) if st.session_state.articles else 0
-        total_claims = len(st.session_state.verification) if st.session_state.verification else 0
-        accuracy = st.session_state.accuracy_value
-        
-        with st.container(border=True):
-            st.markdown("### 📄 Report Status")
-            
-            status = st.session_state.agent_states["report"]
-            if status == "complete":
-                st.markdown("**Status:** Complete ✅")
-            elif status == "in-progress" or status == "generating":
-                st.markdown("**Status:** Generating ⏳")
-            elif status == "failed":
-                st.markdown("**Status:** Failed ❌")
-            else:
-                st.markdown(f"**Status:** {status.title()}")
-                
-            st.markdown(f"**Sources Used:** {total_selected}")
-            st.markdown(f"**Verified Claims:** {total_claims}")
-            st.markdown(f"**Confidence Score:** {accuracy}")
-            st.markdown("**Generated:** Just Now")
-            
-            if status == "complete" and st.session_state.report_text:
-                st.markdown("[View Report Preview](#final-research-report)")
+
 
 # Expanded Agent Detail Workspace Modal
 if st.session_state.open_modal:
@@ -1021,7 +1033,7 @@ if st.session_state.open_modal:
 # ====================================================
 
 # Section 1: Research Sources
-if st.session_state.articles:
+if st.session_state.articles and not st.session_state.report_text:
     st.write("")
     st.write("---")
     st.markdown("## 📚 Research Sources")
@@ -1050,7 +1062,7 @@ if st.session_state.articles:
                         st.markdown(f"[View Source Link ↗]({art['url']})")
 
 # Section 2: Summary Analysis
-if st.session_state.summary:
+if st.session_state.summary and not st.session_state.report_text:
     st.write("")
     st.write("---")
     st.markdown("## 💡 Summary Analysis")
@@ -1088,7 +1100,7 @@ if st.session_state.summary:
         st.write(summary_text)
 
 # Section 3: Fact Verification
-if st.session_state.verification:
+if st.session_state.verification and not st.session_state.report_text:
     st.write("")
     st.write("---")
     st.markdown("## 🛡️ Fact Verification Results")
@@ -1116,73 +1128,112 @@ if st.session_state.verification:
                 st.markdown(f"**Status:** {badge}")
                 st.markdown(f"**Confidence:** `{confidence}`")
 
-# Section 4: Final Research Report & Download (Constrained to reading width)
+# Section 4: Final Research Report Preview & Download
 if st.session_state.report_text:
     st.write("")
     st.write("---")
-    st.markdown('<div id="final-research-report"></div>', unsafe_allow_html=True)
     
-    # Constrain reading width for document layout comfort (approx 800-1000px)
-    col_space_l, col_report_card, col_space_r = st.columns([1, 10, 1])
+    # Report Completion Banner (clean success card with subtle green accent styling)
+    st.markdown(
+        """
+        <div id="research-report-preview" class="success-banner">
+            <div class="success-banner-title">✓ Report Generated Successfully</div>
+            <div class="success-banner-subtitle">Report ready for review and download.</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    # Auto-Scroll Component
+    if not st.session_state.has_scrolled:
+        import streamlit.components.v1 as components
+        components.html(
+            """
+            <script>
+                setTimeout(function() {
+                    var element = window.parent.document.getElementById("research-report-preview");
+                    if (element) {
+                        element.scrollIntoView({behavior: "smooth", block: "start"});
+                    }
+                }, 300);
+            </script>
+            """,
+            height=0,
+        )
+        st.session_state.has_scrolled = True
+
+    # Center-aligned read width (900-1000px)
+    col_space_l, col_report_card, col_space_r = st.columns([1.2, 7.6, 1.2])
     
     with col_report_card:
         with st.container(border=True):
-            st.markdown("## 📄 Final Research Report")
-            
-            # Report Metadata
-            total_selected = len(st.session_state.articles) if st.session_state.articles else 0
-            total_claims = len(st.session_state.verification) if st.session_state.verification else 0
-            accuracy = st.session_state.accuracy_value
-            
-            col_meta1, col_meta2, col_meta3, col_meta4 = st.columns(4)
-            col_meta1.metric("Sources Analyzed", total_selected)
-            col_meta2.metric("Claims Verified", total_claims)
-            col_meta3.metric("Confidence Score", accuracy)
-            col_meta4.metric("Citations Used", total_selected)
-            
-            st.write("---")
+            st.markdown("<h2 style='text-align: center; color: #f8fafc; margin-bottom: 24px; font-weight: 700;'>📄 Research Report Preview</h2>", unsafe_allow_html=True)
             
             report_lines = st.session_state.report_text.split("\n\n")
             
-            with st.expander("💡 Executive Summary", expanded=True):
-                st.markdown(report_lines[0] if len(report_lines) > 0 else "")
+            # Executive Summary
+            st.markdown("### 💡 Executive Summary")
+            st.markdown(report_lines[0] if len(report_lines) > 0 else "")
+            
+            st.write("")
+            st.write("---")
+            
+            # Key Findings
+            st.markdown("### 🔍 Key Findings")
+            st.markdown(report_lines[1] if len(report_lines) > 1 else "")
+            
+            st.write("")
+            st.write("---")
+            
+            # Detailed Analysis
+            st.markdown("### 📈 Detailed Analysis")
+            st.markdown("\n\n".join(report_lines[2:5]) if len(report_lines) > 4 else "")
+            
+            st.write("")
+            st.write("---")
+            
+            # Verified Claims
+            st.markdown("### 🛡️ Verified Claims")
+            if st.session_state.verification:
+                table_md = "| Claim | Status | Confidence | Evidence |\n| :--- | :--- | :--- | :--- |\n"
+                for item in st.session_state.verification:
+                    status = item.get("verification_status", "UNVERIFIED")
+                    badge = "🟢 Verified" if status == "VERIFIED" else "🔴 Disputed" if status == "UNVERIFIED" else "🟡 Partial"
+                    confidence = f"{int(item.get('confidence', 0.8) * 100)}%"
+                    evidence = item.get("evidence", "Internal evaluation")[:60] + "..."
+                    claim = item.get("claim", "N/A")
+                    table_md += f"| {claim} | {badge} | {confidence} | {evidence} |\n"
+                st.markdown(table_md)
+            else:
+                st.info("No claims verified.")
                 
-            with st.expander("🔍 Key Findings", expanded=True):
-                st.markdown(report_lines[1] if len(report_lines) > 1 else "")
+            st.write("")
+            st.write("---")
+            
+            # Conclusions
+            st.markdown("### 🎯 Conclusions")
+            st.markdown(report_lines[-2] if len(report_lines) > 5 else "")
+            
+            st.write("")
+            st.write("---")
+            
+            # References
+            st.markdown("### 📚 References")
+            total_selected = len(st.session_state.articles) if st.session_state.articles else 0
+            st.write(f"**Total citations used:** {total_selected}")
+            if st.session_state.articles:
+                for idx, article in enumerate(st.session_state.articles):
+                    st.write(f"**[{idx+1}]** {article['title']} — *Source: {article['source']}* [Link]({article['url']})")
+            else:
+                st.info("No references.")
                 
-            with st.expander("📈 Detailed Analysis", expanded=True):
-                st.markdown("\n\n".join(report_lines[2:5]) if len(report_lines) > 4 else "")
-                
-            with st.expander("🛡️ Verified Claims Breakdown", expanded=False):
-                if st.session_state.verification:
-                    table_md = "| Claim | Status | Confidence | Evidence |\n| :--- | :--- | :--- | :--- |\n"
-                    for item in st.session_state.verification:
-                        status = item.get("verification_status", "UNVERIFIED")
-                        badge = "🟢 Verified" if status == "VERIFIED" else "🔴 Disputed" if status == "UNVERIFIED" else "🟡 Partial"
-                        confidence = f"{int(item.get('confidence', 0.8) * 100)}%"
-                        evidence = item.get("evidence", "Internal evaluation")[:60] + "..."
-                        claim = item.get("claim", "N/A")
-                        table_md += f"| {claim} | {badge} | {confidence} | {evidence} |\n"
-                    st.markdown(table_md)
-                else:
-                    st.info("No claims verified.")
-                    
-            with st.expander("🎯 Conclusions", expanded=True):
-                st.markdown(report_lines[-2] if len(report_lines) > 5 else "")
-                
-            with st.expander("📚 References & Citations", expanded=False):
-                st.write(f"**Total citations used:** {total_selected}")
-                if st.session_state.articles:
-                    for idx, article in enumerate(st.session_state.articles):
-                        st.write(f"**[{idx+1}]** {article['title']} — *Source: {article['source']}* [Link]({article['url']})")
-                else:
-                    st.info("No references.")
-                    
             st.write("")
             st.caption("Generated on: 2026-06-11 21:34 (Local System Time)")
             
             # Download Section
             st.write("")
+            st.write("---")
+            st.markdown('<div class="download-section-trigger"></div>', unsafe_allow_html=True)
             st.markdown("### 📥 Download Full Report")
             col_d1, col_d2, col_d3, col_d4 = st.columns(4)
             with col_d1:
@@ -1296,6 +1347,7 @@ def handle_search(search_query: str):
     st.session_state.verification = []
     st.session_state.report_text = ""
     st.session_state.pdf_path = ""
+    st.session_state.has_scrolled = False
     
     # Reset stats & agent states
     st.session_state.agent_states = {
@@ -1323,6 +1375,7 @@ def handle_search(search_query: str):
             pdf_name = uploaded_file.name
         
         asyncio.run(run_pipeline_async(search_query, uploaded_text, pdf_name))
+        st.rerun()
     except Exception as exc:
         st.session_state.error = str(exc)
         # Set all active/in-progress agents back to waiting on crash
