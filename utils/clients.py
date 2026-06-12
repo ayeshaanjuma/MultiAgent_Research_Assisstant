@@ -6,8 +6,8 @@ from PyPDF2 import PdfReader
 from config import GROQ_API_KEY, TAVILY_API_KEY, CHROMADB_MODE, CHROMADB_PATH, CHROMADB_HOST, CHROMADB_PORT
 
 GROQ_API_URLS = [
-    "https://api.groq.com/v1/chat/completions",
     "https://api.groq.com/openai/v1/chat/completions",
+    "https://api.groq.com/v1/chat/completions",
     "https://api.groq.com/v1/llm/text-generation",
 ]
 TAVILY_API_URL = "https://api.tavily.com/search"
@@ -24,9 +24,9 @@ async def groq_generate(prompt: str, max_tokens: int = 1024, temperature: float 
         "Content-Type": "application/json",
     }
 
-    last_exc: Exception | None = None
+    primary_exc: Exception | None = None
     async with httpx.AsyncClient(timeout=60) as client:
-        for url in GROQ_API_URLS:
+        for idx, url in enumerate(GROQ_API_URLS):
             try:
                 if url.endswith("/llm/text-generation"):
                     payload = {
@@ -47,7 +47,9 @@ async def groq_generate(prompt: str, max_tokens: int = 1024, temperature: float 
                 resp = await client.post(url, headers=headers, json=payload)
                 # If 404/400, try next format/endpoint
                 if resp.status_code >= 400:
-                    last_exc = httpx.HTTPStatusError(f"bad response: {resp.status_code} {resp.text}", request=resp.request, response=resp)
+                    exc = httpx.HTTPStatusError(f"bad response: {resp.status_code} {resp.text}", request=resp.request, response=resp)
+                    if idx == 0:
+                        primary_exc = exc
                     continue
 
                 data = resp.json()
@@ -74,12 +76,13 @@ async def groq_generate(prompt: str, max_tokens: int = 1024, temperature: float 
 
                 return json.dumps(data)
             except Exception as exc:
-                last_exc = exc
+                if idx == 0:
+                    primary_exc = exc
                 continue
 
     # If we reach here, all attempts failed
-    if last_exc:
-        raise last_exc
+    if primary_exc:
+        raise primary_exc
     raise RuntimeError("Unexpected failure calling Groq API")
 
 def get_chromadb_client() -> chromadb.ClientAPI:

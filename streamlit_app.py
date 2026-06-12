@@ -88,10 +88,61 @@ st.markdown("""
 header {visibility: hidden;}
 footer {visibility: hidden;}
 
+html {
+    scroll-behavior: smooth !important;
+}
+
+/* Global styled containers to match the dark glassmorphism agent cards */
+div[class*="stBorderedContainer"] {
+    background-color: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Style for expanders in the report preview to blend with dark mode */
+div[data-testid="stExpander"] {
+    background-color: rgba(17, 24, 39, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+    margin-bottom: 12px !important;
+}
+div[data-testid="stExpander"] details {
+    border: none !important;
+}
+div[data-testid="stExpander"] summary {
+    font-weight: 600 !important;
+    color: #f8fafc !important;
+}
+
+/* Style for anchor links pointing to final-research-report to look like a premium button */
+a[href="#final-research-report"] {
+    display: block !important;
+    text-align: center !important;
+    margin-top: 12px !important;
+    padding: 10px 16px !important;
+    background-color: #14B8A6 !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    text-decoration: none !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 6px rgba(20, 184, 166, 0.25) !important;
+    transition: background-color 0.2s, transform 0.1s !important;
+}
+a[href="#final-research-report"]:hover {
+    background-color: #2DD4BF !important;
+    color: #ffffff !important;
+}
+a[href="#final-research-report"]:active {
+    transform: scale(0.98) !important;
+}
+
+
 /* Custom styles for stats cards */
 .stat-card {
-    background-color: #0b0f19;
-    border: 1px solid #1e293b;
+    background-color: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 16px 8px;
     text-align: center;
@@ -100,16 +151,21 @@ footer {visibility: hidden;}
 .stat-value {
     font-size: 26px;
     font-weight: 700;
-    color: #00c497;
     font-family: 'Inter', sans-serif;
     margin-bottom: 2px;
 }
-.stat-value.white {
-    color: #f8fafc;
+.stat-value.teal-text {
+    color: #14B8A6 !important;
+}
+.stat-value.cyan-text {
+    color: #2DD4BF !important;
+}
+.stat-value.white-text {
+    color: #f8fafc !important;
 }
 .stat-label {
     font-size: 11px;
-    color: #64748b;
+    color: #94a3b8;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -117,23 +173,36 @@ footer {visibility: hidden;}
 
 /* Agent dashboard cards (styled directly on the container columns - locked to compact height) */
 div[data-testid="column"]:has(div.agent-header) {
-    background-color: #0c101b !important;
-    border: 1px solid #2e3c54 !important;
+    background-color: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 16px !important;
-    padding: 24px !important;
+    padding: 20px !important;
     box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6) !important;
     position: relative !important;
-    height: 140px !important;
-    min-height: 140px !important;
+    height: 180px !important;
+    min-height: 180px !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
-    transition: border-color 0.2s, box-shadow 0.2s !important;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s, background-color 0.2s !important;
 }
 div[data-testid="column"]:has(div.agent-header):hover {
-    border-color: #00c497 !important;
-    box-shadow: 0 0 15px rgba(0, 196, 151, 0.15) !important;
+    border-color: #14B8A6 !important;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.15) !important;
+    background-color: #1a2332 !important;
+}
+div[data-testid="column"]:has(div.agent-header):has(a[href="#final-research-report"]) {
+    cursor: pointer !important;
+}
+div[data-testid="column"]:has(div.agent-header):has(a[href="#final-research-report"]):hover {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3) !important;
+    transform: translateY(-2px) !important;
+    background-color: #1a2332 !important;
+}
+.agent-dot.failed {
+    background-color: #ef4444 !important;
+    box-shadow: 0 0 10px #ef4444 !important;
 }
 
 /* Background backdrop blur for page when modal is active */
@@ -143,7 +212,7 @@ div[data-testid="column"]:has(div.agent-header):hover {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: rgba(3, 7, 18, 0.75) !important;
+    background: rgba(3, 7, 18, 0.8) !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
     z-index: 9998 !important;
@@ -159,13 +228,13 @@ div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) {
     max-width: 1000px !important;
     height: 70vh !important;
     max-height: 800px !important;
-    background: rgba(12, 16, 27, 0.98) !important;
+    background: rgba(17, 24, 39, 0.98) !important;
     backdrop-filter: blur(24px) !important;
     -webkit-backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 20px !important;
     padding: 28px !important;
-    box-shadow: 0 0 50px rgba(0, 196, 151, 0.2) !important;
+    box-shadow: 0 0 50px rgba(20, 184, 166, 0.15) !important;
     z-index: 99999 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -182,26 +251,26 @@ div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) * {
     max-width: 100% !important;
 }
 
-/* Style close button inside modal header */
+/* Style close button inside modal header - Teal border, transparent background */
 div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) div[data-testid="column"]:last-of-type button {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: transparent !important;
+    border: 1px solid #14B8A6 !important;
     border-radius: 50% !important;
     width: 30px !important;
     height: 30px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: #94a3b8 !important;
+    color: #14B8A6 !important;
     font-size: 12px !important;
     cursor: pointer !important;
     padding: 0 !important;
     min-height: unset !important;
 }
 div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) div[data-testid="column"]:last-of-type button:hover {
-    background: rgba(239, 68, 68, 0.15) !important;
-    border-color: rgba(239, 68, 68, 0.4) !important;
-    color: #ef4444 !important;
+    background: rgba(20, 184, 166, 0.1) !important;
+    border-color: #2DD4BF !important;
+    color: #2DD4BF !important;
 }
 
 @keyframes modalFadeIn {
@@ -224,20 +293,20 @@ div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) div[data-tes
     border-radius: 8px;
 }
 .agent-icon-container.blue {
-    background-color: rgba(59, 130, 246, 0.15);
-    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    color: #3b82f6 !important;
 }
 .agent-icon-container.green {
-    background-color: rgba(16, 185, 129, 0.15);
-    color: #10b981;
+    background-color: rgba(20, 184, 166, 0.1) !important;
+    color: #14B8A6 !important;
 }
 .agent-icon-container.yellow {
-    background-color: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    color: #f59e0b !important;
 }
 .agent-icon-container.purple {
-    background-color: rgba(139, 92, 246, 0.15);
-    color: #8b5cf6;
+    background-color: rgba(139, 92, 246, 0.1) !important;
+    color: #8b5cf6 !important;
 }
 .agent-info {
     flex-grow: 1;
@@ -260,17 +329,17 @@ div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) div[data-tes
     margin-top: 4px;
 }
 .agent-dot.waiting {
-    background-color: #475569;
-    box-shadow: 0 0 6px #475569;
+    background-color: #64748b !important;
+    box-shadow: 0 0 6px #64748b !important;
 }
 .agent-dot.in-progress {
-    background-color: #3b82f6;
-    box-shadow: 0 0 10px #3b82f6;
-    animation: agentPulse 1.5s infinite;
+    background-color: #14B8A6 !important;
+    box-shadow: 0 0 10px #14B8A6 !important;
+    animation: agentPulse 1.5s infinite !important;
 }
 .agent-dot.complete {
-    background-color: #10b981;
-    box-shadow: 0 0 10px #10b981;
+    background-color: #22C55E !important;
+    box-shadow: 0 0 10px #22C55E !important;
 }
 .agent-status-text {
     font-size: 12px;
@@ -283,10 +352,10 @@ div[data-testid="stVerticalBlock"]:has(div[class*="modal-trigger"]) div[data-tes
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Styled text input */
+/* Styled text input - Card Background and Subtle Border */
 div[data-testid="stTextInput"] input {
-    background-color: #0b0f19 !important;
-    border: 1px solid #1e293b !important;
+    background-color: #111827 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
     border-radius: 12px !important;
     color: #f8fafc !important;
     font-size: 16px !important;
@@ -294,7 +363,7 @@ div[data-testid="stTextInput"] input {
     height: 48px !important;
 }
 div[data-testid="stTextInput"] input:focus {
-    border-color: #00c497 !important;
+    border-color: #14B8A6 !important;
 }
 
 /* Select toggle button in top-right of agent column cards */
@@ -318,7 +387,7 @@ div[data-testid="column"]:has(div.agent-header) div[data-testid="stButton"]:firs
     justify-content: center !important;
 }
 div[data-testid="column"]:has(div.agent-header) div[data-testid="stButton"]:first-of-type button:hover {
-    color: #3b82f6 !important;
+    color: #14B8A6 !important;
     background: transparent !important;
     border: none !important;
 }
@@ -328,7 +397,7 @@ div[data-testid="column"]:has(div.agent-header) div[data-testid="stButton"]:firs
 
 /* Glassmorphism agent panel container */
 .agent-details-panel {
-    background: rgba(11, 15, 25, 0.6) !important;
+    background: rgba(17, 24, 39, 0.6) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -354,16 +423,16 @@ div[data-testid="column"]:has(div.agent-header) div[data-testid="stButton"]:firs
     letter-spacing: 0.05em;
     margin-right: 6px;
 }
-.badge.completed { background-color: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-.badge.processing { background-color: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
-.badge.verified { background-color: rgba(16, 185, 129, 0.2); color: #00c497; border: 1px solid rgba(16, 185, 129, 0.4); }
-.badge.high-confidence { background-color: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); }
-.badge.trusted-source { background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge.completed { background-color: rgba(34, 197, 94, 0.1) !important; color: #22C55E !important; border: 1px solid rgba(34, 197, 94, 0.2) !important; }
+.badge.processing { background-color: rgba(20, 184, 166, 0.1) !important; color: #14B8A6 !important; border: 1px solid rgba(20, 184, 166, 0.2) !important; }
+.badge.verified { background-color: rgba(34, 197, 94, 0.1) !important; color: #22C55E !important; border: 1px solid rgba(34, 197, 94, 0.2) !important; }
+.badge.high-confidence { background-color: rgba(139, 92, 246, 0.1) !important; color: #8b5cf6 !important; border: 1px solid rgba(139, 92, 246, 0.2) !important; }
+.badge.trusted-source { background-color: rgba(245, 158, 11, 0.1) !important; color: #f59e0b !important; border: 1px solid rgba(245, 158, 11, 0.2) !important; }
 
-/* Start research button */
+/* Start research button - Premium Teal Accent */
 div[data-testid="stButton"] button {
-    background-color: #00c497 !important;
-    color: #030712 !important;
+    background-color: #14B8A6 !important;
+    color: #ffffff !important;
     border: none !important;
     border-radius: 12px !important;
     font-weight: 700 !important;
@@ -373,8 +442,8 @@ div[data-testid="stButton"] button {
     transition: background-color 0.2s, transform 0.1s;
 }
 div[data-testid="stButton"] button:hover {
-    background-color: #05a882 !important;
-    color: #030712 !important;
+    background-color: #2DD4BF !important;
+    color: #ffffff !important;
 }
 div[data-testid="stButton"] button:active {
     transform: scale(0.98);
@@ -494,6 +563,10 @@ div[data-testid="stFileUploaderFileData"] {
 """, unsafe_allow_html=True)
 
 # Helper functions to build HTML segments
+def clean_html(html_str: str) -> str:
+    return " ".join([line.strip() for line in html_str.split("\n") if line.strip()])
+
+
 def get_agent_header_html(name: str, desc: str, status: str, color_class: str, svg_icon: str, status_text: str = "Waiting...") -> str:
     status_class = "waiting"
     if status == "in-progress":
@@ -501,23 +574,7 @@ def get_agent_header_html(name: str, desc: str, status: str, color_class: str, s
     elif status == "complete":
         status_class = "complete"
         
-    # Special compact layout for complete Report Generator
-    if name == "Report Generator" and status == "complete":
-        sources_count = len(st.session_state.articles) if st.session_state.articles else 0
-        accuracy = st.session_state.accuracy_value
-        status_html = f"""
-        <div style="font-size: 11px; color: #94a3b8; line-height: 1.4; margin-top: 10px;">
-            <div>Status: <span style="color: #10b981; font-weight: 600;">Complete</span></div>
-            <div>Sources Used: {sources_count}</div>
-            <div>Citations: {sources_count}</div>
-            <div>Confidence: {accuracy}</div>
-            <span class="badge completed" style="margin-top: 6px; display: inline-block;">Report Ready</span>
-        </div>
-        """
-    else:
-        status_html = f'<div class="agent-status-text" style="margin-top: 16px;">{status_text}</div>'
-        
-    return f"""
+    html = f"""
     <div class="agent-header">
       <div class="agent-card-header">
         <div class="agent-icon-container {color_class}">
@@ -529,19 +586,115 @@ def get_agent_header_html(name: str, desc: str, status: str, color_class: str, s
         </div>
         <div class="agent-dot {status_class}"></div>
       </div>
-      {status_html}
+      <div class="agent-status-text" style="margin-top: 16px;">{status_text}</div>
+    </div>
+    """
+    return clean_html(html)
+
+
+def get_report_card_html(status: str, sources: int, claims: int, confidence: str, generated_time: str = "Just Now") -> str:
+    status_class = "waiting"
+    status_label = "Waiting"
+    status_color = "#64748b" # gray
+    badge_html = ""
+    
+    if status == "in-progress" or status == "generating":
+        status_class = "in-progress"
+        status_label = "Generating"
+        status_color = "#f59e0b" # yellow
+    elif status == "complete" or status == "ready":
+        status_class = "complete"
+        status_label = "Ready"
+        status_color = "#22C55E" # success green
+        badge_html = f"""
+        <div style="font-size: 10px; color: #22C55E; font-weight: 700; margin-top: 8px; display: flex; align-items: center; gap: 4px; justify-content: center; background: rgba(34, 197, 94, 0.1); padding: 4px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.2);">
+          ✓ Generated Successfully
+        </div>
+        """
+    elif status == "failed":
+        status_class = "failed"
+        status_label = "Failed"
+        status_color = "#ef4444" # red
+        badge_html = f"""
+        <div style="font-size: 10px; color: #ef4444; font-weight: 700; margin-top: 8px; display: flex; align-items: center; gap: 4px; justify-content: center; background: rgba(239, 68, 68, 0.1); padding: 4px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2);">
+          ✗ Generation Failed
+        </div>
+        """
+
+    # Extract percentage value for progress bar if available
+    pct_val = "0%"
+    if confidence and confidence != "--":
+        pct_val = confidence
+
+    # Visual layout for metrics
+    metrics_content = f"""
+    <div style="margin-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px; font-family: 'Inter', sans-serif;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; row-gap: 4px; column-gap: 12px; font-size: 11px;">
+        <div style="color: #64748b; font-weight: 500;">Status</div>
+        <div style="text-align: right; color: {status_color}; font-weight: 600;">{status_label}</div>
+        
+        <div style="color: #64748b; font-weight: 500; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px;">Sources</div>
+        <div style="text-align: right; color: #f8fafc; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px;">{sources if sources else '--'}</div>
+        
+        <div style="color: #64748b; font-weight: 500; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px;">Claims</div>
+        <div style="text-align: right; color: #f8fafc; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px;">{claims if claims else '--'}</div>
+        
+        <div style="color: #64748b; font-weight: 500; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px;">Confidence</div>
+        <div style="text-align: right; color: #14B8A6; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 2px; display: flex; flex-direction: column; align-items: flex-end;">
+          <span>{confidence}</span>
+          <div style="background: rgba(255,255,255,0.1); height: 3px; border-radius: 2px; width: 40px; margin-top: 2px; overflow: hidden; display: block;">
+            <div style="background: #14B8A6; height: 100%; width: {pct_val};"></div>
+          </div>
+        </div>
+      </div>
+      {badge_html}
     </div>
     """
 
+    card_content = f"""
+    <div class="agent-header report-summary-panel">
+      <div class="agent-card-header">
+        <div class="agent-icon-container purple">
+          {SVG_REPORT}
+        </div>
+        <div class="agent-info" style="margin-right: 24px;">
+          <div class="agent-name">Report Generator</div>
+          <div class="agent-desc">Final Document</div>
+        </div>
+        <div class="agent-dot {status_class}"></div>
+      </div>
+      {metrics_content}
+    </div>
+    """
 
-def get_stat_card_html(value: str, label: str, green_color: bool = False) -> str:
-    val_class = "white" if not green_color else ""
-    return f"""
+    if status == "complete" or status == "ready":
+        html = f"""
+        <a href="#final-research-report" target="_self" style="text-decoration: none; color: inherit; display: block; height: 100%;">
+          {card_content}
+        </a>
+        """
+    else:
+        html = card_content
+        
+    return clean_html(html)
+
+
+
+
+def get_stat_card_html(value: str, label: str, color_class: str = "white-text") -> str:
+    if label == "Accuracy" and value != "--" and value != "0%":
+        display_val = f"{value} <span style='color: #22C55E; font-size: 16px; margin-left: 4px;'>✓</span>"
+    else:
+        display_val = value
+        
+    html = f"""
     <div class="stat-card">
-      <div class="stat-value {val_class}">{value}</div>
+      <div class="stat-value {color_class}">{display_val}</div>
       <div class="stat-label">{label}</div>
     </div>
     """
+    return clean_html(html)
+
 
 # Load RAG pipeline with default streamlit spinner disabled
 @st.cache_resource(show_spinner=False)
@@ -553,7 +706,7 @@ header_left, header_right = st.columns([2.2, 1])
 with header_left:
     st.markdown("""
         <h1 style="margin-bottom: 0px; font-weight: 800; font-size: 38px; color: #f8fafc; font-family: 'Inter', sans-serif;">
-            Research <span style="color: #00c497;">Summarizer</span>
+            Research <span style="color: #14B8A6;">Summarizer</span>
         </h1>
         <p style="color: #64748b; font-size: 15px; margin-top: 2px; font-weight: 500; font-family: 'Inter', sans-serif;">
             Multi-Agent AI Research System
@@ -567,9 +720,10 @@ with header_right:
     stat3_placeholder = stat_col3.empty()
 
 # Render initial Stats
-stat1_placeholder.markdown(get_stat_card_html(str(st.session_state.articles_count), "Articles", green_color=True), unsafe_allow_html=True)
-stat2_placeholder.markdown(get_stat_card_html(str(st.session_state.claims_count), "Claims", green_color=True), unsafe_allow_html=True)
-stat3_placeholder.markdown(get_stat_card_html(st.session_state.accuracy_value, "Accuracy"), unsafe_allow_html=True)
+stat1_placeholder.markdown(get_stat_card_html(str(st.session_state.articles_count), "Articles", "teal-text"), unsafe_allow_html=True)
+stat2_placeholder.markdown(get_stat_card_html(str(st.session_state.claims_count), "Claims", "cyan-text"), unsafe_allow_html=True)
+stat3_placeholder.markdown(get_stat_card_html(st.session_state.accuracy_value, "Accuracy", "white-text"), unsafe_allow_html=True)
+
 
 # Search Box with Upload Icon inside
 st.write("")
@@ -598,16 +752,20 @@ a4_placeholder = col_a4.empty()
 
 # UI Refresh Helper
 def update_ui():
-    # Update Stats
-    stat1_placeholder.markdown(get_stat_card_html(str(st.session_state.articles_count), "Articles", green_color=True), unsafe_allow_html=True)
-    stat2_placeholder.markdown(get_stat_card_html(str(st.session_state.claims_count), "Claims", green_color=True), unsafe_allow_html=True)
-    stat3_placeholder.markdown(get_stat_card_html(st.session_state.accuracy_value, "Accuracy"), unsafe_allow_html=True)
+    stat1_placeholder.markdown(get_stat_card_html(str(st.session_state.articles_count), "Articles", "teal-text"), unsafe_allow_html=True)
+    stat2_placeholder.markdown(get_stat_card_html(str(st.session_state.claims_count), "Claims", "cyan-text"), unsafe_allow_html=True)
+    stat3_placeholder.markdown(get_stat_card_html(st.session_state.accuracy_value, "Accuracy", "white-text"), unsafe_allow_html=True)
+
     
     # Update Agent Cards (headers)
     a1_placeholder.markdown(get_agent_header_html("Research Agent", "Web, PDFs, Databases", st.session_state.agent_states["research"], "blue", SVG_RESEARCH, st.session_state.research_status), unsafe_allow_html=True)
     a2_placeholder.markdown(get_agent_header_html("Summarization Agent", "5-Page Analysis", st.session_state.agent_states["summarization"], "green", SVG_SUMMARIZATION, st.session_state.summarization_status), unsafe_allow_html=True)
     a3_placeholder.markdown(get_agent_header_html("Fact Verification", "Trusted Sources", st.session_state.agent_states["verification"], "yellow", SVG_VERIFICATION, st.session_state.verification_status_msg), unsafe_allow_html=True)
-    a4_placeholder.markdown(get_agent_header_html("Report Generator", "Final Document", st.session_state.agent_states["report"], "purple", SVG_REPORT, st.session_state.report_status), unsafe_allow_html=True)
+    total_selected = len(st.session_state.articles) if st.session_state.articles else 0
+    total_claims = len(st.session_state.verification) if st.session_state.verification else 0
+    accuracy = st.session_state.accuracy_value
+    a4_placeholder.markdown(get_report_card_html(st.session_state.agent_states["report"], total_selected, total_claims, accuracy), unsafe_allow_html=True)
+
 
 # Render initial Agent Cards
 update_ui()
@@ -629,6 +787,35 @@ with col_a3:
     if st.button("👁️", key="toggle_verification", help="View Details"):
         st.session_state.open_modal = "verification"
         st.rerun()
+
+# Compact Report Status Card directly below col_a4 (in a new row)
+col_b1, col_b2, col_b3, col_b4 = st.columns(4)
+with col_b4:
+    if st.session_state.agent_states["report"] != "waiting":
+        total_selected = len(st.session_state.articles) if st.session_state.articles else 0
+        total_claims = len(st.session_state.verification) if st.session_state.verification else 0
+        accuracy = st.session_state.accuracy_value
+        
+        with st.container(border=True):
+            st.markdown("### 📄 Report Status")
+            
+            status = st.session_state.agent_states["report"]
+            if status == "complete":
+                st.markdown("**Status:** Complete ✅")
+            elif status == "in-progress" or status == "generating":
+                st.markdown("**Status:** Generating ⏳")
+            elif status == "failed":
+                st.markdown("**Status:** Failed ❌")
+            else:
+                st.markdown(f"**Status:** {status.title()}")
+                
+            st.markdown(f"**Sources Used:** {total_selected}")
+            st.markdown(f"**Verified Claims:** {total_claims}")
+            st.markdown(f"**Confidence Score:** {accuracy}")
+            st.markdown("**Generated:** Just Now")
+            
+            if status == "complete" and st.session_state.report_text:
+                st.markdown("[View Report Preview](#final-research-report)")
 
 # Expanded Agent Detail Workspace Modal
 if st.session_state.open_modal:
@@ -816,13 +1003,10 @@ if st.session_state.open_modal:
 if st.session_state.report_text:
     st.write("")
     st.write("---")
+    st.markdown('<div id="final-research-report"></div>', unsafe_allow_html=True)
     
-    # Constrain reading width for comfort using column structure
-    col_space_l, col_report_card, col_space_r = st.columns([1, 8, 1])
-    
-    with col_report_card:
-        st.markdown('<div style="background-color: #0c101b; border: 1px solid #2e3c54; border-radius: 20px; padding: 40px; box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6);">', unsafe_allow_html=True)
-        st.markdown('<h2 style="color: #f8fafc; font-family: \'Inter\', sans-serif; margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">📄 Final Research Report</h2>', unsafe_allow_html=True)
+    with st.container(border=True):
+        st.markdown("## 📄 Final Research Report")
         
         # Report Metadata
         total_selected = len(st.session_state.articles) if st.session_state.articles else 0
@@ -835,7 +1019,7 @@ if st.session_state.report_text:
         col_meta3.metric("Confidence Score", accuracy)
         col_meta4.metric("Citations Used", total_selected)
         
-        st.markdown('<hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 20px; margin-bottom: 20px;">', unsafe_allow_html=True)
+        st.write("---")
         
         # Split logic to display report preview cleanly
         report_lines = st.session_state.report_text.split("\n\n")
@@ -875,8 +1059,7 @@ if st.session_state.report_text:
                 st.info("No references.")
                 
         st.write("")
-        st.markdown(f'<div style="font-size: 11px; color: #64748b; text-align: right;">Generated on: 2026-06-11 21:34 (Local System Time)</div>', unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.caption("Generated on: 2026-06-11 21:34 (Local System Time)")
         
         # Download Section
         st.write("")
@@ -892,6 +1075,8 @@ if st.session_state.report_text:
             st.download_button("🌐 Markdown Format", data=st.session_state.report_text, file_name="research_report.md", mime="text/markdown", key="main_md_download", use_container_width=True)
         with col_d4:
             st.download_button("🔤 TXT Format", data=st.session_state.report_text, file_name="research_report.txt", mime="text/plain", key="main_txt_download", use_container_width=True)
+
+
 
 async def run_pipeline_async(query: str, uploaded_text: str, pdf_name: str):
     # 1. Research Agent
