@@ -498,6 +498,22 @@ div[data-testid="stButton"] button:active {
     transform: scale(0.98) !important;
 }
 
+div[data-testid="stButton"] button:disabled,
+div[data-testid="stButton"] button[disabled] {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(248, 250, 252, 0.65) !important;
+    border: 1px solid rgba(248, 250, 252, 0.12) !important;
+    box-shadow: none !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+}
+
+div[data-testid="stButton"] button:disabled:hover,
+div[data-testid="stButton"] button[disabled]:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: none !important;
+}
+
 /* File Uploader Premium Box Styling */
 div[data-testid="stFileUploader"] {
     width: 100% !important;
@@ -598,16 +614,61 @@ div[data-testid="stFileUploaderFileData"] {
     font-size: 13px !important;
 }
 
-/* Responsive layout helper for downloads container */
-@media (max-width: 768px) {
-    div[data-testid="stVerticalBlock"]:has(div.download-section-trigger) div[data-testid="stHorizontalBlock"] {
-        flex-direction: column !important;
-    }
-    div[data-testid="stVerticalBlock"]:has(div.download-section-trigger) div[data-testid="stHorizontalBlock"] div[data-testid="column"] {
-        width: 100% !important;
-        min-width: 100% !important;
-        margin-bottom: 8px !important;
-    }
+/* Color styling to ensure report preview context matches title color */
+.report-preview-content,
+.report-preview-content p,
+.report-preview-content h1,
+.report-preview-content h2,
+.report-preview-content h3,
+.report-preview-content h4,
+.report-preview-content h5,
+.report-preview-content h6,
+.report-preview-content li,
+.report-preview-content span,
+.report-preview-content td,
+.report-preview-content th {
+    color: #f8fafc !important;
+}
+
+/* Ensure all markdown text in report is visible */
+div[data-testid="stMarkdownContainer"] {
+    color: #f8fafc !important;
+}
+
+div[data-testid="stMarkdownContainer"] * {
+    color: #f8fafc !important;
+}
+
+/* Ensure text in the container is white */
+.report-preview-content * {
+    color: #f8fafc !important;
+}
+
+/* Target Streamlit stContainer elements in report */
+div[data-testid="stBorderedContainer"] {
+    color: #f8fafc !important;
+}
+
+div[data-testid="stBorderedContainer"] * {
+    color: #f8fafc !important;
+}
+
+/* Ensure all text within the report container is visible */
+div:has(.report-preview-content) {
+    color: #f8fafc !important;
+}
+
+div:has(.report-preview-content) * {
+    color: #f8fafc !important;
+}
+
+/* Override any default text colors in the report section */
+.report-preview-content {
+    color: #ffffff !important;
+}
+
+.report-preview-content * {
+    color: #ffffff !important;
 }
 
 </style>
@@ -1169,6 +1230,8 @@ if st.session_state.report_text:
         with st.container(border=True):
             st.markdown("<h2 style='text-align: center; color: #f8fafc; margin-bottom: 24px; font-weight: 700;'>📄 Research Report Preview</h2>", unsafe_allow_html=True)
             
+            st.markdown('<div class="report-preview-content">', unsafe_allow_html=True)
+            
             report_lines = st.session_state.report_text.split("\n\n")
             
             # Executive Summary
@@ -1230,6 +1293,8 @@ if st.session_state.report_text:
             st.write("")
             st.caption("Generated on: 2026-06-11 21:34 (Local System Time)")
             
+            st.markdown('</div>', unsafe_allow_html=True)
+            
             # Download Section
             st.write("")
             st.write("---")
@@ -1240,6 +1305,8 @@ if st.session_state.report_text:
                 if st.session_state.pdf_path and os.path.exists(st.session_state.pdf_path):
                     with open(st.session_state.pdf_path, "rb") as f:
                         st.download_button("📄 PDF Format", data=f, file_name="research_report.pdf", mime="application/pdf", key="main_pdf_download", use_container_width=True)
+                else:
+                    st.button("📄 PDF Format", disabled=True, use_container_width=True, help="PDF will be available once the report is generated")
             with col_d2:
                 st.download_button("📝 DOCX Format", data=st.session_state.report_text, file_name="research_report.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", key="main_docx_download", use_container_width=True)
             with col_d3:
